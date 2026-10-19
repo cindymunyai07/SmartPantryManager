@@ -2,17 +2,20 @@ package com.example.smartpantrymanager;
 
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.activity.EdgeToEdge;
+import androidx.fragment.app.Fragment;
 
 import com.example.smartpantrymanager.ui.PantryFragment;
+import com.example.smartpantrymanager.ui.SuggestedRecipesFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
- * Host activity: it holds one screen (fragment) at a time.
- * For now it shows the pantry list; more screens are added later.
+ * Host activity: holds one screen (fragment) at a time and switches
+ * between them using the bottom navigation bar.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -29,12 +32,28 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Show the pantry list the first time the activity is created
-        if (savedInstanceState == null) {
+        // Switch screens when a bottom navigation item is tapped
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment fragment;
+            int id = item.getItemId();
+            if (id == R.id.nav_pantry) {
+                fragment = new PantryFragment();
+            } else if (id == R.id.nav_suggested) {
+                fragment = new SuggestedRecipesFragment();
+            } else {
+                return false;
+            }
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainer, new PantryFragment())
+                    .replace(R.id.fragmentContainer, fragment)
                     .commit();
+            return true;
+        });
+
+        // Start on the pantry list the first time the activity is created
+        if (savedInstanceState == null) {
+            bottomNav.setSelectedItemId(R.id.nav_pantry);
         }
     }
 }
