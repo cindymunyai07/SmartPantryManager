@@ -1,11 +1,11 @@
 package com.example.smartpantrymanager.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 /**
- * Pantry List screen: shows every ingredient stored in the database
- * and lets the user delete items. Add/edit will be wired up next.
+ * Pantry List screen: shows every ingredient stored in the database,
+ * and opens the Add/Edit screen or deletes items.
  */
 public class PantryFragment extends Fragment implements PantryAdapter.OnItemActionListener {
 
@@ -48,10 +48,10 @@ public class PantryFragment extends Fragment implements PantryAdapter.OnItemActi
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
-        // Add button: the Add/Edit screen is built in the next step
+        // Add button: open the Add/Edit screen with an Intent (no extras = new item)
         FloatingActionButton fab = view.findViewById(R.id.fabAddItem);
         fab.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Add screen coming next", Toast.LENGTH_SHORT).show());
+                startActivity(new Intent(requireContext(), AddEditIngredientActivity.class)));
 
         return view;
     }
@@ -70,10 +70,12 @@ public class PantryFragment extends Fragment implements PantryAdapter.OnItemActi
         textEmpty.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
+    /** Tapping a row opens the Add/Edit screen and passes the item's id in the Intent. */
     @Override
     public void onItemClick(PantryItem item) {
-        // Will open the Add/Edit screen in the next step
-        Toast.makeText(requireContext(), "Edit " + item.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(requireContext(), AddEditIngredientActivity.class);
+        intent.putExtra(AddEditIngredientActivity.EXTRA_ITEM_ID, item.getId());
+        startActivity(intent);
     }
 
     @Override
