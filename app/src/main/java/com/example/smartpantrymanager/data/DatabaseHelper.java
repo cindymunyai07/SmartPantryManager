@@ -7,18 +7,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.smartpantrymanager.model.PantryItem;
+import com.example.smartpantrymanager.model.Recipe;
+import com.example.smartpantrymanager.model.RecipeIngredient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates the SQLite database and provides CRUD methods for pantry items.
- * Recipe methods and seeding are added in a later step.
+ * Creates the SQLite database, seeds the recipes on first run,
+ * and provides CRUD methods for pantry items plus read methods for recipes.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "smart_pantry.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;   // raised from 1 so recipes get seeded
 
     // pantry_item table
     public static final String TABLE_PANTRY = "pantry_item";
@@ -74,9 +76,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COL_UNIT + " TEXT NOT NULL, "
                 + "FOREIGN KEY (" + COL_RECIPE_ID + ") REFERENCES "
                 + TABLE_RECIPE + "(" + COL_ID + ") ON DELETE CASCADE)");
+
+        // Pre-load the recipe collection on first run
+        RecipeSeeder.seed(db);
     }
 
-    /** Simple upgrade strategy: drop everything and rebuild. */
+    /** Simple upgrade strategy: drop everything and rebuild (which also re-seeds). */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPE_ING);
@@ -86,7 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // ---------------------------------------------------------------
-    // CREATE
+    // PANTRY: CREATE
     // ---------------------------------------------------------------
 
     /** Inserts a pantry item and returns its new row id (or -1 on failure). */
@@ -96,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // ---------------------------------------------------------------
-    // READ
+    // PANTRY: READ
     // ---------------------------------------------------------------
 
     /** Returns every pantry item, sorted alphabetically by name. */
@@ -122,7 +127,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // ---------------------------------------------------------------
-    // UPDATE
+    // PANTRY: UPDATE
     // ---------------------------------------------------------------
 
     /** Updates an existing pantry item. Returns the number of rows changed. */
@@ -133,7 +138,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // ---------------------------------------------------------------
-    // DELETE
+    // PANTRY: DELETE
     // ---------------------------------------------------------------
 
     /** Deletes a pantry item by id. Returns the number of rows removed. */
@@ -141,6 +146,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(TABLE_PANTRY, COL_ID + " = ?",
                 new String[]{String.valueOf(id)});
+    }
+
+    // ---------------------------------------------------------------
+    // RECIPES: READ
+    // ---------------------------------------------------------------
+
+    /** Returns every recipe together with its ingredient list. */
+    public List<Recipe> getAllRecipes() {
+        List<Recipe> recipes = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        try (Cursor c = db.query(TABLE_RECIPE, null, null, null,
+                null, null, COL_RECIPE_NAME + " COLLATE NOCASE ASC")) {
+            while (c.moveToNext()) {
+                recipes.add(recipeFromCursor(db, c));
+            }
+        }
+        return recipes;
+    }
+
+    /** Returns one recipe (with its ingredients) by id, or null if not found. */
+    public Recipe getRecipe(long id) {
+        SQLiteDatabase db = getReadableDatabase();
+        try (Cursor c = db.query(TABLE_RECIPE, null, COL_ID + " = ?",
+                new String[]{String.valueOf(id)}, null, null, null)) {
+            return c.moveToFirst() ? recipeFromCursor(db, c) : null;
+        }
     }
 
     // ---------------------------------------------------------------
@@ -167,5 +198,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int expiryIndex = c.getColumnIndexOrThrow(COL_EXPIRY);
         item.setExpiryDate(c.isNull(expiryIndex) ? null : c.getString(expiryIndex));
         return item;
+    }
+
+    /** Builds a Recipe from the current cursor row and loads its ingredients. */
+    private Recipe recipeFromCursor(SQLiteDatabase db, Cursor c) {
+        Recipe recipe = new Recipe();
+        recipe.setId(c.getLong(c.getColumnIndexOrThrow(COL_ID)));
+        recipe.setName(c.getString(c.getColumnIndexOrThrow(COL_RECIPE_NAME)));
+        recipe.setSteps(c.getString(c.getColumnIndexOrThrow(COL_RECIPE_STEPS)));
+        recipe.setIngredients(getIngredientsForRecipe(db, recipe.getId()));
+        return recipe;
+    }
+
+    /** Reads all ingredient lines that belong to one recipe. */
+    private List<RecipeIngredient> getIngredientsForRecipe(SQLiteDatabase db, long recipeId) {
+        List<RecipeIngredient> ingredients = new ArrayList<>();
+        try (Cursor c = db.query(TABLE_RECIPE_ING, null, COL_RECIPE_ID + " = ?",
+                new String[]{String.valueOf(recipeId)}, null, null, null)) {
+            while (c.moveToNext()) {
+                RecipeIngredient ing = new RecipeIngredient();
+                ing.setId(c.getLong(c.getColumnIndexOrThrow(COL_ID)));
+                ing.setRecipeId(recipeId);
+                ing.setName(c.getString(c.getColumnIndexOrThrow(COL_NAME)));
+                ing.setNormalizedName(c.getString(c.getColumnIndexOrThrow(COL_NORMALIZED)));
+                ing.setQuantity(c.getDouble(c.getColumnIndexOrThrow(COL_QUANTITY)));
+                ing.setUnit(c.getString(c.getColumnIndexOrThrow(COL_UNIT)));
+                ingredients.add(ing);
+            }
+        }
+        return ingredients;
     }
 }
