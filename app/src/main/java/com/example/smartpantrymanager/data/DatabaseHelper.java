@@ -175,6 +175,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // ---------------------------------------------------------------
+    // RECIPES: unit lookup
+    // ---------------------------------------------------------------
+
+    /**
+     * Returns the base unit ("g", "ml" or "piece") that recipes use for this
+     * ingredient, or null if no recipe uses it.
+     */
+    public String getRecipeUnitForIngredient(String normalizedName) {
+        SQLiteDatabase db = getReadableDatabase();
+        try (Cursor c = db.query(TABLE_RECIPE_ING, new String[]{COL_UNIT},
+                COL_NORMALIZED + " = ?", new String[]{normalizedName},
+                null, null, null, "1")) {
+            return c.moveToFirst() ? c.getString(0) : null;
+        }
+    }
+
+    // ---------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------
 

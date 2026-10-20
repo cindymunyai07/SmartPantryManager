@@ -63,6 +63,13 @@
             android:id="@+id/spinnerUnit"
             android:layout_width="match_parent"
             android:layout_height="48dp" />
+        <TextView
+            android:id="@+id/textUnitError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#B3261E"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <!-- Expiry date (optional) -->
         <com.google.android.material.textfield.TextInputLayout

@@ -2,6 +2,7 @@ package com.example.smartpantrymanager.ui;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -42,6 +43,7 @@ public class AddEditIngredientActivity extends AppCompatActivity {
     private TextInputLayout layoutName, layoutQuantity;
     private TextInputEditText editName, editQuantity, editExpiry;
     private Spinner spinnerUnit;
+    private TextView textUnitError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         editQuantity = findViewById(R.id.editQuantity);
         editExpiry = findViewById(R.id.editExpiry);
         spinnerUnit = findViewById(R.id.spinnerUnit);
+        textUnitError = findViewById(R.id.textUnitError);
         Button buttonSave = findViewById(R.id.buttonSave);
         Button buttonClearDate = findViewById(R.id.buttonClearDate);
 
@@ -150,12 +153,25 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             }
         }
 
+        // Validate the unit against what the recipes use for this ingredient
+        String chosenUnit = spinnerUnit.getSelectedItem().toString();
+        String expectedBase = name.isEmpty() ? null
+                : dbHelper.getRecipeUnitForIngredient(NameNormalizer.normalize(name));
+        if (expectedBase != null
+                && !expectedBase.equals(UnitConverter.toBaseUnit(chosenUnit))) {
+            textUnitError.setText(name + " is measured in "
+                    + describeUnit(expectedBase) + ". Please choose a matching unit.");
+            textUnitError.setVisibility(View.VISIBLE);
+            valid = false;
+        } else {
+            textUnitError.setVisibility(View.GONE);
+        }
+
         if (!valid) {
             return; // stay on the screen so the user can fix the errors
         }
 
         // Convert to the base unit and clean the name so matching works later
-        String chosenUnit = spinnerUnit.getSelectedItem().toString();
         double baseQuantity = UnitConverter.toBaseQuantity(quantity, chosenUnit);
         String baseUnit = UnitConverter.toBaseUnit(chosenUnit);
         String expiry = getText(editExpiry);
@@ -172,6 +188,15 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             Toast.makeText(this, "Ingredient added", Toast.LENGTH_SHORT).show();
         }
         finish(); // go back to the pantry list
+    }
+
+    /** Describes a base unit in friendly words for the error message. */
+    private String describeUnit(String baseUnit) {
+        switch (baseUnit) {
+            case "g":  return "weight (g or kg)";
+            case "ml": return "volume (ml, l, cup, tbsp or tsp)";
+            default:   return "pieces (piece)";
+        }
     }
 
     private String getText(TextInputEditText editText) {
