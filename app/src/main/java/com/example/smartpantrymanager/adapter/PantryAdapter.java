@@ -1,5 +1,6 @@
 package com.example.smartpantrymanager.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smartpantrymanager.R;
 import com.example.smartpantrymanager.model.PantryItem;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Connects the list of PantryItem objects to the RecyclerView.
- * For each item it fills in one copy of the item_pantry.xml layout.
+ * For each item it fills in one copy of the item_pantry.xml layout,
+ * and highlights items that are expired or expiring soon (if enabled in Settings).
  */
 public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryViewHolder> {
 
@@ -27,8 +34,12 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         void onDeleteClick(PantryItem item);
     }
 
+    private static final int WARNING_COLOR = Color.parseColor("#B3261E");
+
     private final List<PantryItem> items = new ArrayList<>();
     private final OnItemActionListener listener;
+    private boolean alertEnabled = true;
+    private int alertDays = 3;
 
     public PantryAdapter(OnItemActionListener listener) {
         this.listener = listener;
@@ -39,6 +50,12 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         items.clear();
         items.addAll(newItems);
         notifyDataSetChanged();
+    }
+
+    /** Applies the user's expiry settings from the Settings screen. */
+    public void setExpiryAlert(boolean enabled, int days) {
+        this.alertEnabled = enabled;
+        this.alertDays = days;
     }
 
     /** Creates a new row view (called only when a new row is needed). */
@@ -57,16 +74,54 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
 
         holder.textName.setText(item.getName());
         holder.textQuantity.setText(formatQuantity(item.getQuantity()) + " " + item.getUnit());
-
-        String expiry = item.getExpiryDate();
-        if (expiry == null || expiry.isEmpty()) {
-            holder.textExpiry.setText("No expiry date");
-        } else {
-            holder.textExpiry.setText("Expires: " + expiry);
-        }
+        bindExpiry(holder, item.getExpiryDate());
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(item));
         holder.buttonDelete.setOnClickListener(v -> listener.onDeleteClick(item));
+    }
+
+    /** Shows the expiry text, in red if the item is expired or expiring soon. */
+    private void bindExpiry(PantryViewHolder holder, String expiry) {
+        // Always reset the colour first, because rows are reused while scrolling
+        holder.textExpiry.setTextColor(holder.defaultExpiryColor);
+
+        if (expiry == null || expiry.isEmpty()) {
+            holder.textExpiry.setText("No expiry date");
+            return;
+        }
+
+        int daysLeft = daysUntil(expiry);
+        if (alertEnabled && daysLeft < 0) {
+            holder.textExpiry.setText("Expired: " + expiry);
+            holder.textExpiry.setTextColor(WARNING_COLOR);
+        } else if (alertEnabled && daysLeft <= alertDays) {
+            holder.textExpiry.setText(daysLeft == 0
+                    ? "Expires today!"
+                    : "Expiring soon: " + expiry);
+            holder.textExpiry.setTextColor(WARNING_COLOR);
+        } else {
+            holder.textExpiry.setText("Expires: " + expiry);
+        }
+    }
+
+    /** Number of days from today until the given yyyy-MM-dd date (negative if past). */
+    private int daysUntil(String expiry) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            format.setLenient(false);
+            Date expiryDate = format.parse(expiry);
+
+            Calendar today = Calendar.getInstance();
+            today.set(Calendar.HOUR_OF_DAY, 0);
+            today.set(Calendar.MINUTE, 0);
+            today.set(Calendar.SECOND, 0);
+            today.set(Calendar.MILLISECOND, 0);
+
+            long diff = expiryDate.getTime() - today.getTimeInMillis();
+            return (int) Math.round(diff / 86400000.0);
+        } catch (ParseException e) {
+            return Integer.MAX_VALUE;   // unreadable date: treat as "not soon"
+        }
     }
 
     /** Tells the RecyclerView how many rows there are. */
@@ -89,6 +144,7 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         final TextView textQuantity;
         final TextView textExpiry;
         final ImageButton buttonDelete;
+        final int defaultExpiryColor;
 
         PantryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -96,6 +152,7 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
             textQuantity = itemView.findViewById(R.id.textItemQuantity);
             textExpiry = itemView.findViewById(R.id.textItemExpiry);
             buttonDelete = itemView.findViewById(R.id.buttonDelete);
+            defaultExpiryColor = textExpiry.getCurrentTextColor();
         }
     }
 }

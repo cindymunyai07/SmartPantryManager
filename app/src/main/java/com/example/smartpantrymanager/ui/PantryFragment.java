@@ -1,5 +1,5 @@
 package com.example.smartpantrymanager.ui;
-
+import com.example.smartpantrymanager.data.SettingsManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -63,8 +63,13 @@ public class PantryFragment extends Fragment implements PantryAdapter.OnItemActi
         loadItems();
     }
 
+
     /** Reads all items from the database and shows them (or the empty message). */
     private void loadItems() {
+        // Apply the user's expiry settings before showing the list
+        SettingsManager settings = new SettingsManager(requireContext());
+        adapter.setExpiryAlert(settings.isExpiryAlertEnabled(), settings.getExpiryDays());
+
         List<PantryItem> items = dbHelper.getAllPantryItems();
         adapter.setItems(items);
         textEmpty.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
