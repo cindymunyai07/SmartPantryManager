@@ -4,13 +4,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- The scrolling list of pantry items -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerPantry"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="88dp" />
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:paddingTop="20dp"
+            android:text="My Pantry"
+            android:textColor="@color/text_primary"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:text="Everything you have at home"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+        <!-- The scrolling list of pantry items -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerPantry"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="88dp" />
+    </LinearLayout>
 
     <!-- Shown instead of the list when the pantry is empty -->
     <TextView
@@ -18,9 +47,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="24dp"
         android:gravity="center"
+        android:padding="24dp"
         android:text="Your pantry is empty. Tap + to add your first ingredient."
+        android:textColor="@color/text_secondary"
         android:textSize="16sp"
         android:visibility="gone" />
 
@@ -32,5 +62,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:contentDescription="Add ingredient"
-        android:src="@android:drawable/ic_input_add" />
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/green_primary"
+        app:tint="@color/white" />
 </FrameLayout>
