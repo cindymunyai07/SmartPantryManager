@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.smartpantrymanager.ui.PantryFragment;
+import com.example.smartpantrymanager.ui.SettingsFragment;
 import com.example.smartpantrymanager.ui.SuggestedRecipesFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new PantryFragment();
             } else if (id == R.id.nav_suggested) {
                 fragment = new SuggestedRecipesFragment();
+            } else if (id == R.id.nav_settings) {
+                fragment = new SettingsFragment();
             } else {
                 return false;
             }
