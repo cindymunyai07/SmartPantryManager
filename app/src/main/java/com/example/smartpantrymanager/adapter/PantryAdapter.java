@@ -11,15 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartpantrymanager.R;
+import com.example.smartpantrymanager.logic.ExpiryHelper;
 import com.example.smartpantrymanager.model.PantryItem;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Connects the list of PantryItem objects to the RecyclerView.
@@ -90,7 +86,7 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
             return;
         }
 
-        int daysLeft = daysUntil(expiry);
+        int daysLeft = ExpiryHelper.daysUntil(expiry);
         if (alertEnabled && daysLeft < 0) {
             holder.textExpiry.setText("Expired: " + expiry);
             holder.textExpiry.setTextColor(WARNING_COLOR);
@@ -101,26 +97,6 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
             holder.textExpiry.setTextColor(WARNING_COLOR);
         } else {
             holder.textExpiry.setText("Expires: " + expiry);
-        }
-    }
-
-    /** Number of days from today until the given yyyy-MM-dd date (negative if past). */
-    private int daysUntil(String expiry) {
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            format.setLenient(false);
-            Date expiryDate = format.parse(expiry);
-
-            Calendar today = Calendar.getInstance();
-            today.set(Calendar.HOUR_OF_DAY, 0);
-            today.set(Calendar.MINUTE, 0);
-            today.set(Calendar.SECOND, 0);
-            today.set(Calendar.MILLISECOND, 0);
-
-            long diff = expiryDate.getTime() - today.getTimeInMillis();
-            return (int) Math.round(diff / 86400000.0);
-        } catch (ParseException e) {
-            return Integer.MAX_VALUE;   // unreadable date: treat as "not soon"
         }
     }
 
