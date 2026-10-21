@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartPantryManager">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -21,9 +22,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Add/Edit Ingredient screen, opened from the pantry list with an Intent -->
         <activity
             android:name=".ui.AddEditIngredientActivity"
             android:exported="false" />
+
+        <!-- Recipe Detail screen, opened from the suggested recipes list -->
+        <activity
+            android:name=".ui.RecipeDetailActivity"
+            android:exported="false" />
+
+        <!-- Add Recipe screen, opened from the Recipes tab -->
+        <activity
+            android:name=".ui.AddRecipeActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
