@@ -4,11 +4,13 @@ import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.smartpantrymanager.ui.HomeFragment;
 import com.example.smartpantrymanager.ui.PantryFragment;
 import com.example.smartpantrymanager.ui.SettingsFragment;
 import com.example.smartpantrymanager.ui.SuggestedRecipesFragment;
@@ -22,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Keep the app in its light colour scheme so the green design looks the same on every phone
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -38,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment fragment;
             int id = item.getItemId();
-            if (id == R.id.nav_pantry) {
+            if (id == R.id.nav_home) {
+                fragment = new HomeFragment();
+            } else if (id == R.id.nav_pantry) {
                 fragment = new PantryFragment();
             } else if (id == R.id.nav_suggested) {
                 fragment = new SuggestedRecipesFragment();
@@ -54,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        // Start on the pantry list the first time the activity is created
+        // Start on the Home screen the first time the activity is created
         if (savedInstanceState == null) {
-            bottomNav.setSelectedItemId(R.id.nav_pantry);
+            bottomNav.setSelectedItemId(R.id.nav_home);
         }
     }
 }
