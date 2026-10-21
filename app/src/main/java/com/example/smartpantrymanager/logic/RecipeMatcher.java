@@ -18,9 +18,12 @@ public class RecipeMatcher {
 
     private static final double EPSILON = 1e-9;   // avoids tiny decimal rounding problems
 
-    private RecipeMatcher() { }
+    private RecipeMatcher() {
+    }
 
-    /** Returns only the recipes the user can make right now with their current pantry. */
+    /**
+     * Returns only the recipes the user can make right now with their current pantry.
+     */
     public static List<Recipe> findStrictMatches(List<Recipe> recipes, List<PantryItem> pantry) {
         Map<String, Double> stock = buildStock(pantry);
 
@@ -33,7 +36,9 @@ public class RecipeMatcher {
         return matches;
     }
 
-    /** Totals the pantry by "normalized name + base unit", e.g. "egg|piece" -> 6. */
+    /**
+     * Totals the pantry by "normalized name + base unit", e.g. "egg|piece" -> 6.
+     */
     private static Map<String, Double> buildStock(List<PantryItem> pantry) {
         Map<String, Double> stock = new HashMap<>();
         for (PantryItem item : pantry) {
@@ -44,7 +49,9 @@ public class RecipeMatcher {
         return stock;
     }
 
-    /** True only if EVERY ingredient is present in at least the required quantity. */
+    /**
+     * True only if EVERY ingredient is present in at least the required quantity.
+     */
     private static boolean canMake(Recipe recipe, Map<String, Double> stock) {
         if (recipe.getIngredients().isEmpty()) {
             return false;   // a recipe with no ingredients is never suggested

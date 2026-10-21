@@ -6,12 +6,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-/** Works out how many days remain until an ingredient's expiry date. */
+/**
+ * Works out how many days remain until an ingredient's expiry date.
+ */
 public class ExpiryHelper {
 
-    private ExpiryHelper() { }
+    private ExpiryHelper() {
+    }
 
-    /** Number of days from today until the given yyyy-MM-dd date (negative if past). */
+    /**
+     * Number of days from today until the given yyyy-MM-dd date (negative if past).
+     */
     public static int daysUntil(String expiry) {
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);

@@ -1,5 +1,5 @@
 package com.example.smartpantrymanager.ui;
-import com.example.smartpantrymanager.data.SettingsManager;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smartpantrymanager.R;
 import com.example.smartpantrymanager.adapter.PantryAdapter;
 import com.example.smartpantrymanager.data.DatabaseHelper;
+import com.example.smartpantrymanager.data.SettingsManager;
 import com.example.smartpantrymanager.model.PantryItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -56,7 +57,9 @@ public class PantryFragment extends Fragment implements PantryAdapter.OnItemActi
         return view;
     }
 
-    /** Reload the list every time the screen comes back into view. */
+    /**
+     * Reload the list every time the screen comes back into view.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -64,7 +67,9 @@ public class PantryFragment extends Fragment implements PantryAdapter.OnItemActi
     }
 
 
-    /** Reads all items from the database and shows them (or the empty message). */
+    /**
+     * Reads all items from the database and shows them (or the empty message).
+     */
     private void loadItems() {
         // Apply the user's expiry settings before showing the list
         SettingsManager settings = new SettingsManager(requireContext());
@@ -75,7 +80,9 @@ public class PantryFragment extends Fragment implements PantryAdapter.OnItemActi
         textEmpty.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
-    /** Tapping a row opens the Add/Edit screen and passes the item's id in the Intent. */
+    /**
+     * Tapping a row opens the Add/Edit screen and passes the item's id in the Intent.
+     */
     @Override
     public void onItemClick(PantryItem item) {
         Intent intent = new Intent(requireContext(), AddEditIngredientActivity.class);

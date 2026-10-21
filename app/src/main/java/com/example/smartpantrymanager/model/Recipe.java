@@ -15,25 +15,51 @@ public class Recipe {
     private boolean custom;                     // true if the user created this recipe
     private List<RecipeIngredient> ingredients = new ArrayList<>();
 
-    public Recipe() { }
+    public Recipe() {
+    }
 
     public Recipe(String name, String steps) {
         this.name = name;
         this.steps = steps;
     }
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-    public String getSteps() { return steps; }
-    public void setSteps(String steps) { this.steps = steps; }
+    public String getName() {
+        return name;
+    }
 
-    public boolean isCustom() { return custom; }
-    public void setCustom(boolean custom) { this.custom = custom; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public List<RecipeIngredient> getIngredients() { return ingredients; }
-    public void setIngredients(List<RecipeIngredient> ingredients) { this.ingredients = ingredients; }
+    public String getSteps() {
+        return steps;
+    }
+
+    public void setSteps(String steps) {
+        this.steps = steps;
+    }
+
+    public boolean isCustom() {
+        return custom;
+    }
+
+    public void setCustom(boolean custom) {
+        this.custom = custom;
+    }
+
+    public List<RecipeIngredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<RecipeIngredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 }

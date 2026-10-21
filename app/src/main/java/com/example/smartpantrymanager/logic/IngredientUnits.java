@@ -32,9 +32,12 @@ public class IngredientUnits {
         }
     }
 
-    private IngredientUnits() { }
+    private IngredientUnits() {
+    }
 
-    /** Returns "g", "ml" or "piece" for a known ingredient, or null if unknown. */
+    /**
+     * Returns "g", "ml" or "piece" for a known ingredient, or null if unknown.
+     */
     public static String expectedBaseUnit(String normalizedName) {
         return EXPECTED.get(normalizedName);
     }

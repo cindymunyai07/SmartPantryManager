@@ -47,14 +47,18 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    /** Refresh the numbers every time the Home tab is shown. */
+    /**
+     * Refresh the numbers every time the Home tab is shown.
+     */
     @Override
     public void onResume() {
         super.onResume();
         refreshStats();
     }
 
-    /** Reads the database and updates the three stat cards and the summary text. */
+    /**
+     * Reads the database and updates the three stat cards and the summary text.
+     */
     private void refreshStats() {
         DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
         List<PantryItem> pantry;
@@ -91,7 +95,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /** Switches the bottom navigation bar (and the screen) to another tab. */
+    /**
+     * Switches the bottom navigation bar (and the screen) to another tab.
+     */
     private void goToTab(int menuItemId) {
         BottomNavigationView nav = requireActivity().findViewById(R.id.bottomNav);
         nav.setSelectedItemId(menuItemId);

@@ -13,7 +13,8 @@ public class PantryItem {
     private String unit;            // "g", "ml" or a count unit such as "piece"
     private String expiryDate;      // optional, format yyyy-MM-dd, may be null
 
-    public PantryItem() { }
+    public PantryItem() {
+    }
 
     public PantryItem(String name, String normalizedName, double quantity,
                       String unit, String expiryDate) {
@@ -24,21 +25,51 @@ public class PantryItem {
         this.expiryDate = expiryDate;
     }
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-    public String getNormalizedName() { return normalizedName; }
-    public void setNormalizedName(String normalizedName) { this.normalizedName = normalizedName; }
+    public String getName() {
+        return name;
+    }
 
-    public double getQuantity() { return quantity; }
-    public void setQuantity(double quantity) { this.quantity = quantity; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
+    public String getNormalizedName() {
+        return normalizedName;
+    }
 
-    public String getExpiryDate() { return expiryDate; }
-    public void setExpiryDate(String expiryDate) { this.expiryDate = expiryDate; }
+    public void setNormalizedName(String normalizedName) {
+        this.normalizedName = normalizedName;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public String getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(String expiryDate) {
+        this.expiryDate = expiryDate;
+    }
 }

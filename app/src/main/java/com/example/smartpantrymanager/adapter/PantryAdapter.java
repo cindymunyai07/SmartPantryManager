@@ -24,9 +24,12 @@ import java.util.List;
  */
 public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryViewHolder> {
 
-    /** Lets the screen (fragment/activity) react when a row or delete button is tapped. */
+    /**
+     * Lets the screen (fragment/activity) react when a row or delete button is tapped.
+     */
     public interface OnItemActionListener {
         void onItemClick(PantryItem item);
+
         void onDeleteClick(PantryItem item);
     }
 
@@ -41,20 +44,26 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         this.listener = listener;
     }
 
-    /** Replaces the displayed list with fresh data from the database. */
+    /**
+     * Replaces the displayed list with fresh data from the database.
+     */
     public void setItems(List<PantryItem> newItems) {
         items.clear();
         items.addAll(newItems);
         notifyDataSetChanged();
     }
 
-    /** Applies the user's expiry settings from the Settings screen. */
+    /**
+     * Applies the user's expiry settings from the Settings screen.
+     */
     public void setExpiryAlert(boolean enabled, int days) {
         this.alertEnabled = enabled;
         this.alertDays = days;
     }
 
-    /** Creates a new row view (called only when a new row is needed). */
+    /**
+     * Creates a new row view (called only when a new row is needed).
+     */
     @NonNull
     @Override
     public PantryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,7 +72,9 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         return new PantryViewHolder(view);
     }
 
-    /** Fills a row with the data of the item at the given position. */
+    /**
+     * Fills a row with the data of the item at the given position.
+     */
     @Override
     public void onBindViewHolder(@NonNull PantryViewHolder holder, int position) {
         PantryItem item = items.get(position);
@@ -76,7 +87,9 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         holder.buttonDelete.setOnClickListener(v -> listener.onDeleteClick(item));
     }
 
-    /** Shows the expiry text, in red if the item is expired or expiring soon. */
+    /**
+     * Shows the expiry text, in red if the item is expired or expiring soon.
+     */
     private void bindExpiry(PantryViewHolder holder, String expiry) {
         // Always reset the colour first, because rows are reused while scrolling
         holder.textExpiry.setTextColor(holder.defaultExpiryColor);
@@ -100,13 +113,17 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         }
     }
 
-    /** Tells the RecyclerView how many rows there are. */
+    /**
+     * Tells the RecyclerView how many rows there are.
+     */
     @Override
     public int getItemCount() {
         return items.size();
     }
 
-    /** Shows 2 instead of 2.0 when the quantity is a whole number. */
+    /**
+     * Shows 2 instead of 2.0 when the quantity is a whole number.
+     */
     private String formatQuantity(double quantity) {
         if (quantity == Math.floor(quantity)) {
             return String.valueOf((long) quantity);
@@ -114,7 +131,9 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         return String.valueOf(quantity);
     }
 
-    /** Holds references to the views in one row so they are not looked up again and again. */
+    /**
+     * Holds references to the views in one row so they are not looked up again and again.
+     */
     static class PantryViewHolder extends RecyclerView.ViewHolder {
         final TextView textName;
         final TextView textQuantity;

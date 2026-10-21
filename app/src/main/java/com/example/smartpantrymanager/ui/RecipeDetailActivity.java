@@ -25,7 +25,9 @@ import com.example.smartpantrymanager.model.RecipeIngredient;
  */
 public class RecipeDetailActivity extends AppCompatActivity {
 
-    /** Key used to pass the recipe id through the Intent. */
+    /**
+     * Key used to pass the recipe id through the Intent.
+     */
     public static final String EXTRA_RECIPE_ID = "extra_recipe_id";
 
     @Override
@@ -80,7 +82,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
         }
     }
 
-    /** Asks for confirmation, then deletes the recipe and closes the screen. */
+    /**
+     * Asks for confirmation, then deletes the recipe and closes the screen.
+     */
     private void confirmDelete(Recipe recipe) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete recipe")
@@ -96,7 +100,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Shows 2 instead of 2.0 when the quantity is a whole number. */
+    /**
+     * Shows 2 instead of 2.0 when the quantity is a whole number.
+     */
     private String formatQuantity(double quantity) {
         if (quantity == Math.floor(quantity)) {
             return String.valueOf((long) quantity);

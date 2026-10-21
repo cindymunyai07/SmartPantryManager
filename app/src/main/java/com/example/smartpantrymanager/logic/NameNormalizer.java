@@ -16,9 +16,12 @@ public class NameNormalizer {
     private static final Set<String> KEEP_AS_IS = new HashSet<>(Arrays.asList(
             "hummus", "couscous", "asparagus", "molasses", "lemongrass", "watercress"));
 
-    private NameNormalizer() { }
+    private NameNormalizer() {
+    }
 
-    /** Returns the normalized form of an ingredient name. */
+    /**
+     * Returns the normalized form of an ingredient name.
+     */
     public static String normalize(String name) {
         if (name == null) {
             return "";
@@ -38,7 +41,9 @@ public class NameNormalizer {
         return prefix + singular(lastWord);
     }
 
-    /** Applies simple English plural rules to one word. */
+    /**
+     * Applies simple English plural rules to one word.
+     */
     private static String singular(String word) {
         if (word.length() <= 3 || KEEP_AS_IS.contains(word)) {
             return word;

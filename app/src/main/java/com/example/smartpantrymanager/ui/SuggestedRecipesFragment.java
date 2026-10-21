@@ -54,7 +54,9 @@ public class SuggestedRecipesFragment extends Fragment implements RecipeAdapter.
         return view;
     }
 
-    /** Re-run the matching every time the screen is shown, so it reflects pantry and recipe changes. */
+    /**
+     * Re-run the matching every time the screen is shown, so it reflects pantry and recipe changes.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -68,7 +70,9 @@ public class SuggestedRecipesFragment extends Fragment implements RecipeAdapter.
         textNoMatches.setVisibility(matches.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
-    /** Tapping a recipe opens the detail screen and passes the recipe id in the Intent. */
+    /**
+     * Tapping a recipe opens the detail screen and passes the recipe id in the Intent.
+     */
     @Override
     public void onRecipeClick(Recipe recipe) {
         Intent intent = new Intent(requireContext(), RecipeDetailActivity.class);

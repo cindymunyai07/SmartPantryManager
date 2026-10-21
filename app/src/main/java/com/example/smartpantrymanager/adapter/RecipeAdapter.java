@@ -14,10 +14,14 @@ import com.example.smartpantrymanager.model.Recipe;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Shows a list of recipes in the RecyclerView (name and ingredient count). */
+/**
+ * Shows a list of recipes in the RecyclerView (name and ingredient count).
+ */
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
-    /** Lets the screen react when a recipe is tapped. */
+    /**
+     * Lets the screen react when a recipe is tapped.
+     */
     public interface OnRecipeClickListener {
         void onRecipeClick(Recipe recipe);
     }
@@ -29,7 +33,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         this.listener = listener;
     }
 
-    /** Replaces the displayed list. */
+    /**
+     * Replaces the displayed list.
+     */
     public void setRecipes(List<Recipe> newRecipes) {
         recipes.clear();
         recipes.addAll(newRecipes);

@@ -19,7 +19,9 @@ public class SettingsManager {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    /** Whether items close to their expiry date should be highlighted (default: on). */
+    /**
+     * Whether items close to their expiry date should be highlighted (default: on).
+     */
     public boolean isExpiryAlertEnabled() {
         return prefs.getBoolean(KEY_ALERT_ENABLED, true);
     }
@@ -28,7 +30,9 @@ public class SettingsManager {
         prefs.edit().putBoolean(KEY_ALERT_ENABLED, enabled).apply();
     }
 
-    /** How many days before expiry an item counts as "expiring soon" (default: 3). */
+    /**
+     * How many days before expiry an item counts as "expiring soon" (default: 3).
+     */
     public int getExpiryDays() {
         return prefs.getInt(KEY_ALERT_DAYS, 3);
     }

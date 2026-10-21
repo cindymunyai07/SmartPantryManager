@@ -13,7 +13,8 @@ import com.example.smartpantrymanager.logic.UnitConverter;
  */
 public class RecipeSeeder {
 
-    private RecipeSeeder() { }
+    private RecipeSeeder() {
+    }
 
     public static void seed(SQLiteDatabase db) {
         addRecipe(db, "Scrambled Eggs on Toast",
@@ -97,7 +98,9 @@ public class RecipeSeeder {
                 "noodles,200,g", "egg,2,piece", "carrot,1,piece", "soy sauce,2,tbsp");
     }
 
-    /** Inserts one recipe and all of its ingredient lines. */
+    /**
+     * Inserts one recipe and all of its ingredient lines.
+     */
     private static void addRecipe(SQLiteDatabase db, String name, String steps, String... ingredients) {
         ContentValues recipeValues = new ContentValues();
         recipeValues.put(DatabaseHelper.COL_RECIPE_NAME, name);

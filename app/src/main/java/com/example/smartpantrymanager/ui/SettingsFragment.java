@@ -56,7 +56,9 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
-    /** Greys out the day options while the highlight is switched off. */
+    /**
+     * Greys out the day options while the highlight is switched off.
+     */
     private void setRadioEnabled(boolean enabled) {
         for (int i = 0; i < radioGroupDays.getChildCount(); i++) {
             radioGroupDays.getChildAt(i).setEnabled(enabled);

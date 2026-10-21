@@ -45,14 +45,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
-    /** Turn on foreign keys so deleting a recipe also deletes its ingredients. */
+    /**
+     * Turn on foreign keys so deleting a recipe also deletes its ingredients.
+     */
     @Override
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
         db.setForeignKeyConstraintsEnabled(true);
     }
 
-    /** Called once, the first time the database is created. */
+    /**
+     * Called once, the first time the database is created.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_PANTRY + " ("
@@ -83,7 +87,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         RecipeSeeder.seed(db);
     }
 
-    /** Upgrades keep the user's data wherever possible. */
+    /**
+     * Upgrades keep the user's data wherever possible.
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
@@ -105,7 +111,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // PANTRY: CREATE
     // ---------------------------------------------------------------
 
-    /** Inserts a pantry item and returns its new row id (or -1 on failure). */
+    /**
+     * Inserts a pantry item and returns its new row id (or -1 on failure).
+     */
     public long addPantryItem(PantryItem item) {
         SQLiteDatabase db = getWritableDatabase();
         return db.insert(TABLE_PANTRY, null, toValues(item));
@@ -115,7 +123,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // PANTRY: READ
     // ---------------------------------------------------------------
 
-    /** Returns every pantry item, sorted alphabetically by name. */
+    /**
+     * Returns every pantry item, sorted alphabetically by name.
+     */
     public List<PantryItem> getAllPantryItems() {
         List<PantryItem> items = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -128,7 +138,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return items;
     }
 
-    /** Returns one pantry item by id, or null if it does not exist. */
+    /**
+     * Returns one pantry item by id, or null if it does not exist.
+     */
     public PantryItem getPantryItem(long id) {
         SQLiteDatabase db = getReadableDatabase();
         try (Cursor c = db.query(TABLE_PANTRY, null, COL_ID + " = ?",
@@ -141,7 +153,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // PANTRY: UPDATE
     // ---------------------------------------------------------------
 
-    /** Updates an existing pantry item. Returns the number of rows changed. */
+    /**
+     * Updates an existing pantry item. Returns the number of rows changed.
+     */
     public int updatePantryItem(PantryItem item) {
         SQLiteDatabase db = getWritableDatabase();
         return db.update(TABLE_PANTRY, toValues(item), COL_ID + " = ?",
@@ -152,7 +166,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // PANTRY: DELETE
     // ---------------------------------------------------------------
 
-    /** Deletes a pantry item by id. Returns the number of rows removed. */
+    /**
+     * Deletes a pantry item by id. Returns the number of rows removed.
+     */
     public int deletePantryItem(long id) {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(TABLE_PANTRY, COL_ID + " = ?",
@@ -201,7 +217,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // RECIPES: READ
     // ---------------------------------------------------------------
 
-    /** Returns every recipe together with its ingredient list. */
+    /**
+     * Returns every recipe together with its ingredient list.
+     */
     public List<Recipe> getAllRecipes() {
         List<Recipe> recipes = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -214,7 +232,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return recipes;
     }
 
-    /** Returns one recipe (with its ingredients) by id, or null if not found. */
+    /**
+     * Returns one recipe (with its ingredients) by id, or null if not found.
+     */
     public Recipe getRecipe(long id) {
         SQLiteDatabase db = getReadableDatabase();
         try (Cursor c = db.query(TABLE_RECIPE, null, COL_ID + " = ?",
@@ -276,7 +296,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return item;
     }
 
-    /** Builds a Recipe from the current cursor row and loads its ingredients. */
+    /**
+     * Builds a Recipe from the current cursor row and loads its ingredients.
+     */
     private Recipe recipeFromCursor(SQLiteDatabase db, Cursor c) {
         Recipe recipe = new Recipe();
         recipe.setId(c.getLong(c.getColumnIndexOrThrow(COL_ID)));
@@ -287,7 +309,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return recipe;
     }
 
-    /** Reads all ingredient lines that belong to one recipe. */
+    /**
+     * Reads all ingredient lines that belong to one recipe.
+     */
     private List<RecipeIngredient> getIngredientsForRecipe(SQLiteDatabase db, long recipeId) {
         List<RecipeIngredient> ingredients = new ArrayList<>();
         try (Cursor c = db.query(TABLE_RECIPE_ING, null, COL_RECIPE_ID + " = ?",

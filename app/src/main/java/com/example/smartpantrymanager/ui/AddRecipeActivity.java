@@ -68,7 +68,9 @@ public class AddRecipeActivity extends AppCompatActivity {
         addIngredientRow();   // start with one empty ingredient row
     }
 
-    /** Adds one empty ingredient row (name, quantity, unit) to the form. */
+    /**
+     * Adds one empty ingredient row (name, quantity, unit) to the form.
+     */
     private void addIngredientRow() {
         View row = getLayoutInflater().inflate(R.layout.item_ingredient_input,
                 containerIngredients, false);
@@ -89,7 +91,9 @@ public class AddRecipeActivity extends AppCompatActivity {
         containerIngredients.addView(row);
     }
 
-    /** Validates the whole form and, if it is correct, saves the recipe. */
+    /**
+     * Validates the whole form and, if it is correct, saves the recipe.
+     */
     private void saveRecipe() {
         String name = getText(editName);
         String steps = getText(editSteps);
@@ -191,12 +195,17 @@ public class AddRecipeActivity extends AppCompatActivity {
         }
     }
 
-    /** Describes a base unit in friendly words for the error message. */
+    /**
+     * Describes a base unit in friendly words for the error message.
+     */
     private String describeUnit(String baseUnit) {
         switch (baseUnit) {
-            case "g":  return "weight (g or kg)";
-            case "ml": return "volume (ml, l, cup, tbsp or tsp)";
-            default:   return "pieces (piece)";
+            case "g":
+                return "weight (g or kg)";
+            case "ml":
+                return "volume (ml, l, cup, tbsp or tsp)";
+            default:
+                return "pieces (piece)";
         }
     }
 

@@ -35,7 +35,9 @@ import java.util.Locale;
  */
 public class AddEditIngredientActivity extends AppCompatActivity {
 
-    /** Key used to pass the id of the item being edited through the Intent. */
+    /**
+     * Key used to pass the id of the item being edited through the Intent.
+     */
     public static final String EXTRA_ITEM_ID = "extra_item_id";
 
     private DatabaseHelper dbHelper;
@@ -88,7 +90,9 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         buttonSave.setOnClickListener(v -> saveItem());
     }
 
-    /** Reads the item from the database and fills the form fields. */
+    /**
+     * Reads the item from the database and fills the form fields.
+     */
     private void loadExistingItem() {
         PantryItem item = dbHelper.getPantryItem(itemId);
         if (item == null) {
@@ -105,7 +109,9 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         }
     }
 
-    /** Opens a calendar so the user picks a valid date instead of typing it. */
+    /**
+     * Opens a calendar so the user picks a valid date instead of typing it.
+     */
     private void showDatePicker() {
         Calendar cal = Calendar.getInstance();
         new DatePickerDialog(this, (view, year, month, day) ->
@@ -114,7 +120,9 @@ public class AddEditIngredientActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Validates the form and, if everything is correct, saves it to the database. */
+    /**
+     * Validates the form and, if everything is correct, saves it to the database.
+     */
     private void saveItem() {
         String name = getText(editName);
         String quantityText = getText(editQuantity);
@@ -195,12 +203,17 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         finish(); // go back to the pantry list
     }
 
-    /** Describes a base unit in friendly words for the error message. */
+    /**
+     * Describes a base unit in friendly words for the error message.
+     */
     private String describeUnit(String baseUnit) {
         switch (baseUnit) {
-            case "g":  return "weight (g or kg)";
-            case "ml": return "volume (ml, l, cup, tbsp or tsp)";
-            default:   return "pieces (piece)";
+            case "g":
+                return "weight (g or kg)";
+            case "ml":
+                return "volume (ml, l, cup, tbsp or tsp)";
+            default:
+                return "pieces (piece)";
         }
     }
 
@@ -208,7 +221,9 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         return editText.getText() == null ? "" : editText.getText().toString().trim();
     }
 
-    /** Shows 2 instead of 2.0 when the quantity is a whole number. */
+    /**
+     * Shows 2 instead of 2.0 when the quantity is a whole number.
+     */
     private String formatQuantity(double quantity) {
         if (quantity == Math.floor(quantity)) {
             return String.valueOf((long) quantity);
