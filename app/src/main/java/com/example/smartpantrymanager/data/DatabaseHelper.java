@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates the SQLite database, seeds the recipes on first run,
- * and provides CRUD methods for pantry items plus read methods for recipes.
+ * Creates the SQLite database, seeds the recipes on first run, and provides
+ * CRUD methods for pantry items plus create/read/delete methods for recipes.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "smart_pantry.db";
-    private static final int DB_VERSION = 2;   // raised from 1 so recipes get seeded
+    private static final int DB_VERSION = 3;   // 3 adds the is_custom column to recipe
 
     // pantry_item table
     public static final String TABLE_PANTRY = "pantry_item";
@@ -35,6 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_RECIPE = "recipe";
     public static final String COL_RECIPE_NAME = "name";
     public static final String COL_RECIPE_STEPS = "steps";
+    public static final String COL_IS_CUSTOM = "is_custom";
 
     // recipe_ingredient table
     public static final String TABLE_RECIPE_ING = "recipe_ingredient";
@@ -65,7 +66,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + TABLE_RECIPE + " ("
                 + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COL_RECIPE_NAME + " TEXT NOT NULL, "
-                + COL_RECIPE_STEPS + " TEXT NOT NULL)");
+                + COL_RECIPE_STEPS + " TEXT NOT NULL, "
+                + COL_IS_CUSTOM + " INTEGER NOT NULL DEFAULT 0)");
 
         db.execSQL("CREATE TABLE " + TABLE_RECIPE_ING + " ("
                 + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -81,13 +83,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         RecipeSeeder.seed(db);
     }
 
-    /** Simple upgrade strategy: drop everything and rebuild (which also re-seeds). */
+    /** Upgrades keep the user's data wherever possible. */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPE_ING);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PANTRY);
-        onCreate(db);
+        if (oldVersion < 2) {
+            // Very old layout: rebuild everything (which also re-seeds the recipes)
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPE_ING);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPE);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PANTRY);
+            onCreate(db);
+            return;
+        }
+        if (oldVersion < 3) {
+            // Just add the new column; existing pantry items and recipes are kept
+            db.execSQL("ALTER TABLE " + TABLE_RECIPE + " ADD COLUMN "
+                    + COL_IS_CUSTOM + " INTEGER NOT NULL DEFAULT 0");
+        }
     }
 
     // ---------------------------------------------------------------
@@ -149,6 +160,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // ---------------------------------------------------------------
+    // RECIPES: CREATE
+    // ---------------------------------------------------------------
+
+    /**
+     * Saves a user-created recipe together with all of its ingredients.
+     * Uses a transaction so either everything is saved or nothing is.
+     * Returns the new recipe id, or -1 on failure.
+     */
+    public long addRecipe(Recipe recipe) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues recipeValues = new ContentValues();
+            recipeValues.put(COL_RECIPE_NAME, recipe.getName());
+            recipeValues.put(COL_RECIPE_STEPS, recipe.getSteps());
+            recipeValues.put(COL_IS_CUSTOM, 1);
+            long recipeId = db.insert(TABLE_RECIPE, null, recipeValues);
+            if (recipeId == -1) {
+                return -1;   // transaction is not marked successful, so it is rolled back
+            }
+
+            for (RecipeIngredient ing : recipe.getIngredients()) {
+                ContentValues values = new ContentValues();
+                values.put(COL_RECIPE_ID, recipeId);
+                values.put(COL_NAME, ing.getName());
+                values.put(COL_NORMALIZED, ing.getNormalizedName());
+                values.put(COL_QUANTITY, ing.getQuantity());
+                values.put(COL_UNIT, ing.getUnit());
+                db.insert(TABLE_RECIPE_ING, null, values);
+            }
+            db.setTransactionSuccessful();
+            return recipeId;
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    // ---------------------------------------------------------------
     // RECIPES: READ
     // ---------------------------------------------------------------
 
@@ -174,10 +223,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // ---------------------------------------------------------------
-    // RECIPES: unit lookup
-    // ---------------------------------------------------------------
-
     /**
      * Returns the base unit ("g", "ml" or "piece") that recipes use for this
      * ingredient, or null if no recipe uses it.
@@ -189,6 +234,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null, null, null, "1")) {
             return c.moveToFirst() ? c.getString(0) : null;
         }
+    }
+
+    // ---------------------------------------------------------------
+    // RECIPES: DELETE
+    // ---------------------------------------------------------------
+
+    /**
+     * Deletes a recipe the user created. Built-in recipes cannot be deleted.
+     * The recipe's ingredient rows are removed automatically (ON DELETE CASCADE).
+     */
+    public int deleteRecipe(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete(TABLE_RECIPE, COL_ID + " = ? AND " + COL_IS_CUSTOM + " = 1",
+                new String[]{String.valueOf(id)});
     }
 
     // ---------------------------------------------------------------
@@ -223,6 +282,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         recipe.setId(c.getLong(c.getColumnIndexOrThrow(COL_ID)));
         recipe.setName(c.getString(c.getColumnIndexOrThrow(COL_RECIPE_NAME)));
         recipe.setSteps(c.getString(c.getColumnIndexOrThrow(COL_RECIPE_STEPS)));
+        recipe.setCustom(c.getInt(c.getColumnIndexOrThrow(COL_IS_CUSTOM)) == 1);
         recipe.setIngredients(getIngredientsForRecipe(db, recipe.getId()));
         return recipe;
     }
