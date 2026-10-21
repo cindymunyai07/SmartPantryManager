@@ -17,7 +17,7 @@ public class IngredientUnits {
         for (String name : new String[]{"salt", "black pepper", "cinnamon", "yeast",
                 "baking powder", "baking soda", "cocoa", "beef", "mince", "lamb",
                 "bacon", "sausage", "lentil", "bean", "chickpea", "spinach",
-                "broccoli", "mushroom", "cabbage", "yoghurt", "flour", "sugar"}) {
+                "broccoli", "mushroom", "cabbage", "yoghurt", "flour"}) {
             EXPECTED.put(name, "g");
         }
         // Volume
