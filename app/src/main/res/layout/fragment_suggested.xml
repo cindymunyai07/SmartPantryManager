@@ -6,7 +6,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSuggested"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="88dp" />
 
     <!-- Shown instead of a blank screen when no recipe matches -->
     <TextView
@@ -19,4 +21,14 @@
         android:text="No recipes match your pantry yet - add more ingredients"
         android:textSize="16sp"
         android:visibility="gone" />
+
+    <!-- Button to create your own recipe -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddRecipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="Add your own recipe"
+        android:src="@android:drawable/ic_input_add" />
 </FrameLayout>

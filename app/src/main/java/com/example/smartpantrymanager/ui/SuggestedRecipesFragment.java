@@ -1,11 +1,11 @@
 package com.example.smartpantrymanager.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +24,7 @@ import java.util.List;
 /**
  * Suggested Recipes screen: runs the strict-matching rule against the
  * current pantry and lists ONLY the recipes the user can make right now.
+ * Also lets the user open the Add Recipe screen.
  */
 public class SuggestedRecipesFragment extends Fragment implements RecipeAdapter.OnRecipeClickListener {
 
@@ -46,10 +47,14 @@ public class SuggestedRecipesFragment extends Fragment implements RecipeAdapter.
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
+        // Open the Add Recipe screen with an Intent
+        view.findViewById(R.id.fabAddRecipe).setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), AddRecipeActivity.class)));
+
         return view;
     }
 
-    /** Re-run the matching every time the screen is shown, so it reflects pantry changes. */
+    /** Re-run the matching every time the screen is shown, so it reflects pantry and recipe changes. */
     @Override
     public void onResume() {
         super.onResume();
@@ -63,10 +68,12 @@ public class SuggestedRecipesFragment extends Fragment implements RecipeAdapter.
         textNoMatches.setVisibility(matches.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
+    /** Tapping a recipe opens the detail screen and passes the recipe id in the Intent. */
     @Override
     public void onRecipeClick(Recipe recipe) {
-        // The Recipe Detail screen is built in the next step
-        Toast.makeText(requireContext(), recipe.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(requireContext(), RecipeDetailActivity.class);
+        intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.getId());
+        startActivity(intent);
     }
 
     @Override

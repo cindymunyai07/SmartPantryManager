@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.smartpantrymanager.R;
 import com.example.smartpantrymanager.data.DatabaseHelper;
+import com.example.smartpantrymanager.logic.IngredientUnits;
 import com.example.smartpantrymanager.logic.NameNormalizer;
 import com.example.smartpantrymanager.logic.UnitConverter;
 import com.example.smartpantrymanager.model.PantryItem;
@@ -155,8 +156,12 @@ public class AddEditIngredientActivity extends AppCompatActivity {
 
         // Validate the unit against what the recipes use for this ingredient
         String chosenUnit = spinnerUnit.getSelectedItem().toString();
+        String normalizedName = NameNormalizer.normalize(name);
         String expectedBase = name.isEmpty() ? null
-                : dbHelper.getRecipeUnitForIngredient(NameNormalizer.normalize(name));
+                : dbHelper.getRecipeUnitForIngredient(normalizedName);
+        if (expectedBase == null && !name.isEmpty()) {
+            expectedBase = IngredientUnits.expectedBaseUnit(normalizedName);   // fallback list
+        }
         if (expectedBase != null
                 && !expectedBase.equals(UnitConverter.toBaseUnit(chosenUnit))) {
             textUnitError.setText(name + " is measured in "
