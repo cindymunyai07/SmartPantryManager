@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Settings"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchExpiryAlert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Highlight items that are expiring soon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Warn me when an item expires within:"
+        android:textSize="14sp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupDays"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radioDays1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 day" />
+
+        <RadioButton
+            android:id="@+id/radioDays3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 days" />
+
+        <RadioButton
+            android:id="@+id/radioDays7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="7 days" />
+    </RadioGroup>
+</LinearLayout>
