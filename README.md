@@ -1,4 +1,4 @@
-   Smart Pantry Manager
+# Smart Pantry Manager
 
 An Android app written in Java that helps reduce food waste. The user records the
 ingredients they already have at home, and the app suggests only the recipes they can
@@ -6,7 +6,7 @@ cook right now, with no shopping trip required.
 
 Built for Mobile App Development 700 (Richfield) by Munyai Masindi, student number 402411898.
 
-  Features
+## Features
 
 - Home screen with live statistics (items in pantry, recipes you can cook, items expiring soon)
 - Add, view, edit and delete pantry items (name, quantity, unit, optional expiry date)
@@ -21,7 +21,7 @@ Built for Mobile App Development 700 (Richfield) by Munyai Masindi, student numb
 - Settings screen: highlight expired and expiring-soon items, with a choice of 1, 3 or 7 days
 - A friendly message when no recipes match the pantry
 
-  Database choice: SQLite
+## Database choice: SQLite
 
 The app uses SQLite through `SQLiteOpenHelper`. I chose it because:
 
@@ -47,7 +47,7 @@ Tables: `pantry_item`, `recipe`, `recipe_ingredient`. Settings are stored with
   └── MainActivity
   ```
 
- How the strict-matching rule works
+## How the strict-matching rule works
 
 1. The pantry is totalled into a lookup of "normalized name + base unit" and quantity.
 2. Each recipe ingredient is checked against that lookup.
@@ -56,7 +56,7 @@ Tables: `pantry_item`, `recipe`, `recipe_ingredient`. Settings are stored with
 Names are cleaned by `NameNormalizer` and quantities are converted to base units
 (g, ml, piece) by `UnitConverter`, so trivial differences do not break matching.
 
-  How to set up and run
+## How to set up and run
 
 1. Install [Android Studio](https://developer.android.com/studio).
 2. Clone the repository:
