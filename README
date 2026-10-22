@@ -33,15 +33,19 @@ The app uses SQLite through `SQLiteOpenHelper`. I chose it because:
 Tables: `pantry_item`, `recipe`, `recipe_ingredient`. Settings are stored with
 `SharedPreferences`.
 
-   Project structure
+  ## Project structure
 
-| Package | Purpose |
-|---|---|
-| `model` | PantryItem, Recipe, RecipeIngredient |
-| `data` | DatabaseHelper, RecipeSeeder, SettingsManager |
-| `logic` | RecipeMatcher (strict rule), NameNormalizer, UnitConverter, IngredientUnits, ExpiryHelper |
-| `adapter` | PantryAdapter, RecipeAdapter (RecyclerView adapters) |
-| `ui` | Fragments and Activities for each screen |
+  ```
+  com.example.smartpantrymanager
+  ├── model/      PantryItem, Recipe, RecipeIngredient
+  ├── data/       DatabaseHelper, RecipeSeeder, SettingsManager
+  ├── logic/      RecipeMatcher, NameNormalizer, UnitConverter,
+  │               IngredientUnits, ExpiryHelper
+  ├── adapter/    PantryAdapter, RecipeAdapter
+  ├── ui/         Home, Pantry, Recipes and Settings fragments,
+  │               plus the Add/Edit, Recipe Detail and Add Recipe activities
+  └── MainActivity
+  ```
 
  How the strict-matching rule works
 
